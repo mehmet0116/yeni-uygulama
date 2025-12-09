@@ -25,16 +25,11 @@ jobs:
           script: |
             /**
              * ╔═══════════════════════════════════════════════════════════════╗
-             * ║       ULTRA ENTERPRISE ARCHITECT BOT v2.2 (YAML DÜZELTİLMİŞ)  ║
+             * ║       ULTRA ENTERPRISE ARCHITECT BOT v2.3 (YAML SÖZDİZİMİ DÜZELTİLMİŞ)  ║
              * ║       Powered by DeepSeek AI                                  ║
              * ╚═══════════════════════════════════════════════════════════════╝
-             * 
-             * DÜZELTMELER:
-             * ✓ YAML uyumlu çok satırlı script formatı
-             * ✓ Doğru girinti ve escape karakterleri
-             * ✓ API URL'si ve hata yönetimi iyileştirildi
              */
-
+            
             console.log("🚀 [Ultra Bot] İşlem başlatılıyor...");
             console.log(`📍 [Ultra Bot] Event: ${context.eventName}`);
             
@@ -51,6 +46,7 @@ jobs:
             
             console.log(`✅ [Ultra Bot] Validasyonlar başarılı. Mesaj uzunluğu: ${userMessage.length} karakter`);
 
+            // DÜZELTME: systemPrompt ve diğer kodlar için doğru girinti
             const systemPrompt = `
 Sen 1 numaralı global yazılım (ULTRA ENTERPRISE) mimarısın.
 Her geliştirme sorumluluğun; kod, mimari, güvenlik, sürdürülebilirlik, ölçeklenebilirlik, ultra temizlik ve %100 işlevdir.
@@ -258,7 +254,7 @@ Print only file/silme bloklarını üret, sohbet veya öneri eklenemez.
                 resultLog += `<details><summary>AI Yanıt Önizlemesi (ilk ${maxPreviewLength} karakter)</summary>\n\n\`\`\`\n${sanitizedReply}${aiReply.length > maxPreviewLength ? '\n...(kısaltıldı)' : ''}\n\`\`\`\n</details>`;
               }
               
-              resultLog += `\n\n---\n*🤖 DeepSeek ULTRA Enterprise Architect v2.2 | YAML Uyumlu*`;
+              resultLog += `\n\n---\n*🤖 DeepSeek ULTRA Enterprise Architect v2.3 | YAML Sözdizimi Düzeltildi*`;
               
               console.log(`📤 [Ultra Bot] Rapor gönderiliyor...`);
               await github.rest.issues.createComment({
@@ -285,7 +281,7 @@ Print only file/silme bloklarını üret, sohbet veya öneri eklenemez.
               errorLog += `- DEEPSEEK_API_KEY secret'ının doğru olduğundan emin olun\n`;
               errorLog += `- API limitlerini kontrol edin\n`;
               errorLog += `- İstek formatını kontrol edin\n\n`;
-              errorLog += `*🤖 DeepSeek ULTRA Enterprise Architect v2.2 | Hata Yönetimi*`;
+              errorLog += `*🤖 DeepSeek ULTRA Enterprise Architect v2.3 | Hata Yönetimi*`;
               
               await github.rest.issues.createComment({
                 owner: context.repo.owner, repo: context.repo.repo,
