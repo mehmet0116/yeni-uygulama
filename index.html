@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klasik Yılan Oyunu</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-snake"></i> Klasik Yılan Oyunu</h1>
+            <p class="subtitle">Yılanı yön tuşlarıyla kontrol edin ve yemleri toplayın!</p>
+        </header>
+
+        <main>
+            <div class="game-container">
+                <div class="game-header">
+                    <div class="score-board">
+                        <div class="score-item">
+                            <span class="score-label">Skor:</span>
+                            <span id="score" class="score-value">0</span>
+                        </div>
+                        <div class="score-item">
+                            <span class="score-label">En Yüksek:</span>
+                            <span id="high-score" class="score-value">0</span>
+                        </div>
+                        <div class="score-item">
+                            <span class="score-label">Hız:</span>
+                            <span id="speed" class="score-value">Normal</span>
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button id="start-btn" class="btn btn-primary">
+                            <i class="fas fa-play"></i> Oyunu Başlat
+                        </button>
+                        <button id="pause-btn" class="btn btn-secondary">
+                            <i class="fas fa-pause"></i> Duraklat
+                        </button>
+                        <button id="reset-btn" class="btn btn-danger">
+                            <i class="fas fa-redo"></i> Sıfırla
+                        </button>
+                    </div>
+                </div>
+
+                <div class="game-area">
+                    <canvas id="game-canvas" width="600" height="400"></canvas>
+                    
+                    <div id="game-over" class="game-over">
+                        <h2>Oyun Bitti!</h2>
+                        <p>Skorunuz: <span id="final-score">0</span></p>
+                        <button id="restart-btn" class="btn btn-primary">
+                            <i class="fas fa-redo"></i> Tekrar Oyna
+                        </button>
+                    </div>
+                </div>
+
+                <div class="instructions">
+                    <h3><i class="fas fa-info-circle"></i> Nasıl Oynanır?</h3>
+                    <div class="instruction-items">
+                        <div class="instruction">
+                            <i class="fas fa-arrow-up"></i>
+                            <p><strong>Yukarı Ok:</strong> Yılanı yukarı hareket ettir</p>
+                        </div>
+                        <div class="instruction">
+                            <i class="fas fa-arrow-down"></i>
+                            <p><strong>Aşağı Ok:</strong> Yılanı aşağı hareket ettir</p>
+                        </div>
+                        <div class="instruction">
+                            <i class="fas fa-arrow-left"></i>
+                            <p><strong>Sol Ok:</strong> Yılanı sola hareket ettir</p>
+                        </div>
+                        <div class="instruction">
+                            <i class="fas fa-arrow-right"></i>
+                            <p><strong>Sağ Ok:</strong> Yılanı sağa hareket ettir</p>
+                        </div>
+                        <div class="instruction">
+                            <i class="fas fa-apple-alt"></i>
+                            <p><strong>Yem:</strong> Her yem +10 puan ve yılanı uzatır</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Yılan Oyunu &copy; 2023 | OOP Tasarımı ile Geliştirilmiştir</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript Dosyaları -->
+    <script src="src/grid.js"></script>
+    <script src="src/food.js"></script>
+    <script src="src/snake.js"></script>
+    <script src="src/game.js"></script>
+</body>
+</html>
