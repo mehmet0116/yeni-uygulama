@@ -1,0 +1,10 @@
+# Proje bağımlılıkları
+# DeepSeek ULTRA Enterprise Architect v4.0 tarafından güncellendi
+
+# Temel Python bağımlılıkları
+python>=3.8
+
+# Dosya kontrol sistemi için ek bağımlılıklar
+# (check_files.py için gerekli değil, standart kütüphaneler yeterli)
+
+# Güncelleme Notu: Dosya kontrol sistemi eklendi
