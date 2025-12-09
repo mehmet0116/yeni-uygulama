@@ -1,0 +1,5 @@
+# Proje bağımlılıkları
+# Python 3.8+ gereklidir
+
+# Temel bağımlılıklar
+# (Bu proje için harici bağımlılık gerekmiyor)
