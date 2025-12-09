@@ -12,125 +12,199 @@ permissions:
 jobs:
   ultra_architect:
     runs-on: ubuntu-latest
-    if: github.actor != 'github-actions[bot]'
+    if: github.actor != 'github-actions[bot]' && (github.event_name == 'issues' || github.event_name == 'issue_comment')
     steps:
-      - name: Depoyu Kontrol Et
+      - name: Ultra Güvenli Depo Checkout
         uses: actions/checkout@v4
 
-      - name: DeepSeek Botunu Calistir
+      - name: DeepSeek ULTRA Architect Bot Çalıştır
         uses: actions/github-script@v7
         env:
           API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         with:
           script: |
+            /**
+             * ╔═══════════════════════════════════════════════════════════════╗
+             * ║        ULTRA ENTERPRISE ARCHITECT BOT v2.3                    ║
+             * ║        Powered by DeepSeek AI                                 ║
+             * ╚═══════════════════════════════════════════════════════════════╝
+             */
+            
+            console.log("🚀 [Ultra Bot] İşlem başlatılıyor...");
+            console.log(`📍 [Ultra Bot] Event: ${context.eventName}`);
+            
             const userMessage = context.payload.comment ? context.payload.comment.body : context.payload.issue.body;
-            const cleanKey = process.env.API_KEY ? process.env.API_KEY.trim() : "";
-
-            if (!cleanKey) throw new Error("API Anahtarı eksik! Lütfen Secrets ayarlarını kontrol et.");
-
-            console.log("🚀 İşlem başlatılıyor...");
-
-            // --- Prompt Ayarı ---
-            const systemPrompt = `Sen Dünyanın en iyi Yazılım Mimarı (Software Architect) ve Senior Developer'ısın.
-            Görevin: Kullanıcının istediği projeyi, en iyi "Best Practice" kurallarına göre tasarlamak ve kodlamak.
+            const apiKey = process.env.API_KEY ? process.env.API_KEY.trim() : "";
             
-            KURALLAR:
-            1. Asla tek bir dosya ile yetinme. Eğer proje gerektiriyorsa (örn. CSS, JS ayrı olmalı) hepsini ayrı ayrı oluştur.
-            2. Kodların içine açıklayıcı yorum satırları ekle.
-            3. Klasör yapısını kullan (örn: src/main.py, assets/style.css).
-            
-            ÇOK ÖNEMLİ - ÇIKTI FORMATI:
-            Dosyaları oluşturmak için kesinlikle aşağıdaki formatı kullanmalısın. Birden fazla dosya için bu bloğu tekrar et:
-
-            ---FILENAME: dosya_adi.uzantı---
-            [Buraya kodun tamamı gelecek]
-            ---END_OF_FILE---
-            
-            Eğer bir dosyayı silmek istersen:
-            ---DELETE: dosya_adi.uzantı---
-            ---END_DELETE---
-            `;
-
-            // --- DeepSeek API İsteği ---
-            const response = await fetch("https://api.deepseek.com/chat/completions", {
-              method: "POST",
-              headers: {
-                "Authorization": `Bearer ${cleanKey}`, 
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                model: "deepseek-chat",
-                messages: [
-                  { role: "system", content: systemPrompt },
-                  { role: "user", content: "PROJE TALEBİ: " + userMessage }
-                ],
-                stream: false
-              })
-            });
-
-            if (!response.ok) {
-              console.log(await response.text());
-              throw new Error("DeepSeek API hatasi");
+            function throwCritical(msg) {
+              console.error(`‼️ [Ultra Bot Kritik Hata]: ${msg}`);
+              throw new Error("‼️ [Ultra Bot Kritik]: " + msg);
             }
-
-            const data = await response.json();
-            const aiReply = data.choices[0].message.content;
-
-            // --- Dosya İşleme ---
-            const fileRegex = /---FILENAME:\s*(.*?)---\n([\s\S]*?)---END_OF_FILE---/g;
-            const delRegex = /---DELETE:\s*(.*?)---\s*---END_DELETE---/g;
             
-            let match;
-            let log = "### 🤖 DeepSeek İşlem Raporu\n\n";
+            if (!apiKey) throwCritical("API anahtarı yüklü değil! DEEPSEEK_API_KEY secret'ını ekleyin.");
+            if (!userMessage || userMessage.trim().length === 0) throwCritical("Kullanıcı mesajı boş!");
+            
+            console.log(`✅ [Ultra Bot] Validasyonlar başarılı. Mesaj uzunluğu: ${userMessage.length} karakter`);
 
-            // Dosya Oluşturma Döngüsü
-            while ((match = fileRegex.exec(aiReply)) !== null) {
-              const fileName = match[1].trim();
-              const fileContent = match[2].trim();
+            const systemPrompt = `
+            Sen 1 numaralı global yazılım (ULTRA ENTERPRISE) mimarısın.
+            Her geliştirme sorumluluğun; kod, mimari, güvenlik, sürdürülebilirlik, ölçeklenebilirlik, ultra temizlik ve %100 işlevdir.
+
+            ++ KURUMSAL KURALLAR ++
+            - Daima modüler ve en iyi klasör yapısını kur.
+            - Kod içine anlamlı, açıklayıcı, ENGLISH ve TURKISH yorum ekle.
+            - Kod, dökümantasyon, test, ortam dosyası (ör: .env.example), gereksiz bırakılamaz.
+            - Her dosya sadece ilgi alanını kapsayacak.
+            - En az: src/, tests/, docs/, configs/, .env.example, readme.md çıkmalı.
+            - Dosya silinmesi istenirse, kullanıcı "sil: ..." ile belirtir. Ultra güvenli sil.
+            - Hiçbir şekilde sohbet ya da insan gibi mesajlaşma, ek format, yan not kullanılamaz.
+            - Her dosya ve silme işlemi ÖZEL formatta olmalı.
+
+            ++ DOSYA EKLE-GÜNCELLE BLOK FORMAT ++
+            ---FILENAME: path/name.ext---
+            KODUN TAMAMI (gerekli açıklamalarla)
+            ---END_OF_FILE---
+
+            ++ DOSYA SİLME BLOK FORMAT ++
+            ---DELETE: path/filename.ext---
+            ---END_DELETE---
+
+            Print only file/silme bloklarını üret, sohbet veya öneri eklenemez.
+            `.trim();
+
+            console.log("🟢 [Ultra Bot] DeepSeek API çağrısı başlatılıyor...");
+            const apiUrl = "https://api.deepseek.com/chat/completions";
+            
+            try {
+              const response = await fetch(apiUrl, {
+                method: "POST",
+                headers: {
+                  "Authorization": `Bearer ${apiKey}`, 
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  model: "deepseek-chat",
+                  messages: [
+                    { role: "system", content: systemPrompt },
+                    { role: "user", content: "PROJE TALEBİ: " + userMessage }
+                  ],
+                  temperature: 0.15,
+                  stream: false,
+                  max_tokens: 4000
+                })
+              });
               
-              try {
+              if (!response.ok) {
+                const errText = await response.text();
+                throwCritical(`DeepSeek API hatası (${response.status}): ${errText}`);
+              }
+              
+              const data = await response.json();
+              
+              if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                throwCritical("API yanıtı beklenmeyen formatta");
+              }
+              
+              const aiReply = data.choices[0].message.content;
+              console.log(`📝 [Ultra Bot] AI yanıt boyutu: ${aiReply.length} karakter`);
+
+              console.log("📁 [Ultra Bot] Dosya bloklarını işlemeye başlıyor...");
+              const fileRE = /---FILENAME:\s*(.*?)---\n([\s\S]*?)---END_OF_FILE---/g;
+              let match, filesDone=[], filesProblems=[];
+              let resultLog = "### 🟢 Ultra Enterprise Sonuç Raporu\n\n";
+              resultLog += `**📅 Tarih:** ${new Date().toISOString()}\n`;
+              resultLog += `**👤 İstek:** @${context.actor}\n\n`;
+              
+              let fileBlockFound = false;
+              while ((match = fileRE.exec(aiReply)) !== null) {
+                fileBlockFound = true;
+                const fname = match[1].trim();
+                const fcont = match[2].trim();
+                
+                if (!fname || fname.includes('..') || fname.startsWith('/')) {
+                  filesProblems.push({fname, err: 'Geçersiz dosya adı'});
+                  resultLog += `\n❌ \`${fname}\` - Geçersiz dosya adı`;
+                  continue;
+                }
+                
                 let sha;
                 try {
                   const { data: existing } = await github.rest.repos.getContent({
-                    owner: context.repo.owner, repo: context.repo.repo, path: fileName
+                    owner: context.repo.owner, repo: context.repo.repo, path: fname
                   });
                   sha = existing.sha;
-                } catch (e) {}
-
-                await github.rest.repos.createOrUpdateFileContents({
-                  owner: context.repo.owner, repo: context.repo.repo, path: fileName,
-                  message: `DeepSeek: ${fileName}`,
-                  content: Buffer.from(fileContent).toString('base64'),
-                  sha: sha
-                });
-                log += `✅ **Oluşturuldu/Güncellendi:** \`${fileName}\`\n`;
-              } catch (err) {
-                log += `❌ **Hata (${fileName}):** ${err.message}\n`;
+                } catch(_) {}
+                
+                try {
+                  await github.rest.repos.createOrUpdateFileContents({
+                    owner: context.repo.owner, repo: context.repo.repo, path: fname,
+                    message: `[ULTRA BOT]: ${fname} ${sha ? 'güncellendi' : 'oluşturuldu'}`,
+                    content: Buffer.from(fcont).toString('base64'), sha
+                  });
+                  filesDone.push(fname);
+                  resultLog += `\n✅ \`${fname}\` ${sha ? 'güncellendi' : 'oluşturuldu'}`;
+                } catch (err) {
+                  filesProblems.push({fname, err: err.message});
+                  resultLog += `\n❌ \`${fname}\`: ${err.message}`;
+                }
               }
+
+              console.log("🗑️ [Ultra Bot] Silme bloklarını işlemeye başlıyor...");
+              const delRE = /---DELETE:\s*(.*?)---\s*---END_DELETE---/g;
+              let delDone=[], delFail=[];
+              let delMatch;
+              let deleteBlockFound = false;
+              
+              while ((delMatch = delRE.exec(aiReply)) !== null) {
+                deleteBlockFound = true;
+                const fname = delMatch[1].trim();
+                
+                const protectedFiles = ['.gitignore', 'README.md', '.github/workflows/deepseek.yml', 'package.json'];
+                if (protectedFiles.includes(fname)) {
+                  delFail.push({fname, err: 'Korumalı dosya'});
+                  resultLog += `\n🛡️ \`${fname}\` - Korumalı dosya`;
+                  continue;
+                }
+                
+                try {
+                  const { data: existing } = await github.rest.repos.getContent({
+                    owner: context.repo.owner, repo: context.repo.repo, path: fname
+                  });
+                  await github.rest.repos.deleteFile({
+                    owner: context.repo.owner, repo: context.repo.repo, path: fname,
+                    message: `[ULTRA BOT]: ${fname} silindi`,
+                    sha: existing.sha
+                  });
+                  delDone.push(fname);
+                  resultLog += `\n🗑️ \`${fname}\` silindi`;
+                } catch(err) {
+                  delFail.push({fname, err: err.message});
+                  resultLog += `\n⚠️ \`${fname}\`: ${err.message}`;
+                }
+              }
+
+              const totalOps = filesDone.length + delDone.length;
+              resultLog += `\n\n---\n### 📊 İşlem Özeti\n- ✅ **Başarılı:** ${totalOps}\n- 📁 **Dosyalar:** ${filesDone.length}\n- 🗑️ **Silinen:** ${delDone.length}\n`;
+              
+              if (!fileBlockFound && !deleteBlockFound) {
+                 resultLog += `\n⚠️ **Uyarı:** AI kod formatı üretmedi. Cevap:\n\n${aiReply.substring(0, 500)}...`;
+              }
+              
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: resultLog
+              });
+              
+            } catch (error) {
+              console.error(error);
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: `### ❌ Kritik Hata\nHata: ${error.message}`
+              });
+              throw error;
             }
 
-            // Dosya Silme Döngüsü
-            while ((match = delRegex.exec(aiReply)) !== null) {
-              const fileName = match[1].trim();
-              try {
-                const { data: existing } = await github.rest.repos.getContent({
-                  owner: context.repo.owner, repo: context.repo.repo, path: fileName
-                });
-                await github.rest.repos.deleteFile({
-                  owner: context.repo.owner, repo: context.repo.repo, path: fileName,
-                  message: `DeepSeek: ${fileName} silindi`,
-                  sha: existing.sha
-                });
-                log += `🗑️ **Silindi:** \`${fileName}\`\n`;
-              } catch (err) {
-                log += `⚠️ **Silinemedi (${fileName}):** ${err.message}\n`;
-              }
-            }
-
-            // Yorum Yap
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: log + "\n\n---\n" + aiReply
-            });
+      - name: İşlem Sonucunu Logla
+        run: echo "Ultra Enterprise Architect işlemi tamamlandı"
