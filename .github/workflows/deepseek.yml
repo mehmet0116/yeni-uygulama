@@ -1,0 +1,48 @@
+name: DeepSeek Asistanı
+on:
+  issues:
+    types: [opened]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  deepseek_calisiyor:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-actions[bot]'
+    steps:
+      - name: DeepSeek ile Iletisim
+        uses: actions/github-script@v6
+        env:
+          API_TOKEN: ${{ secrets.DEEPSEEK_TOKEN }}
+        with:
+          script: |
+            const userMessage = context.payload.comment ? context.payload.comment.body : context.payload.issue.body;
+            
+            const response = await fetch("https://models.github.ai/inference/chat/completions", {
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${process.env.API_TOKEN}`,
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                model: "DeepSeek-V3-0324",
+                messages: [
+                  { role: "system", content: "Sen uzman bir yazılımcısın. Türkçe cevap ver." },
+                  { role: "user", content: userMessage }
+                ]
+              })
+            });
+
+            const data = await response.json();
+            const aiReply = data.choices[0].message.content;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: "🤖 **DeepSeek:**\n" + aiReply
+            });
