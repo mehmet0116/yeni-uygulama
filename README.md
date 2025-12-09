@@ -115,3 +115,69 @@ Herhangi bir sorun yaşarsanız:
 **🎯 Hedef**: Size mükemmel, temiz, sürdürülebilir ve ölçeklenebilir kod üretmek!
 
 *Powered by DeepSeek ULTRA Enterprise Architect v2.3*
+
+## 🆕 Güncelleme Notu: Dosya Kontrol Sistemi Eklendi
+
+### 📁 Yeni Özellik: Proje Dosya Kontrolü
+
+Artık projenizdeki tüm dosyaları analiz edebilirsiniz:
+
+#### 🚀 Kullanım:
+```bash
+python check_files.py
+```
+
+#### ✨ Özellikler:
+1. **📊 Detaylı Analiz**: Tüm dosyaları türlerine, boyutlarına ve tarihlerine göre analiz eder
+2. **🔍 Kritik Dosya Kontrolü**: Önemli dosyaların varlığını kontrol eder
+3. **📈 İstatistikler**: Dosya dağılımı, en büyük dosyalar, son güncellenenler
+4. **📄 Çoklu Rapor Formatı**: JSON ve HTML formatında raporlar oluşturur
+5. **🔐 Hash Kontrolü**: Dosyaların MD5 hash'lerini hesaplar
+
+#### 📋 Çıktılar:
+- **Konsol Özeti**: Anlık proje durumu
+- **JSON Raporu**: `project_analysis.json` - Detaylı veri
+- **HTML Raporu**: `project_analysis.html` - Görsel rapor
+
+#### 🎯 Kullanım Senaryoları:
+- Proje bakımı ve temizliği
+- Dosya boyutu optimizasyonu
+- Eksik dosya tespiti
+- Proje yapısı analizi
+- Versiyon kontrolü öncesi kontrol
+
+#### 📝 Örnek Çıktı:
+```
+📁 PROJE DOSYA KONTROL RAPORU
+📂 Proje Dizini: /path/to/project
+📅 Tarama Tarihi: 2024-01-15 14:30:00
+📊 Toplam Dosya: 42
+💾 Toplam Boyut: 156.78 KB
+
+📈 DOSYA TÜRLERİNE GÖRE DAĞILIM:
+  • CODE: 15 dosya (%35.7)
+  • CONFIG: 8 dosya (%19.0)
+  • DOCUMENTATION: 5 dosya (%11.9)
+  • TEST: 10 dosya (%23.8)
+  • OTHER: 4 dosya (%9.5)
+
+🔍 KRİTİK DOSYA KONTROLÜ:
+✅ README.md - MEVCUT
+✅ .gitignore - MEVCUT
+✅ requirements.txt - MEVCUT
+❌ package.json - EKSİK
+✅ Dockerfile - MEVCUT
+✅ .env.example - MEVCUT
+```
+
+#### ⚙️ Teknik Detaylar:
+- **Python 3.8+** uyumlu
+- **Platform bağımsız** (Windows, Linux, macOS)
+- **Hafif ve hızlı** - ek bağımlılık gerektirmez
+- **Güvenli** - kritik dosyaları değiştirmez
+
+---
+
+**🔧 Geliştirici Notu**: Bu sistem proje yönetimini kolaylaştırmak ve dosya organizasyonunu optimize etmek için tasarlanmıştır. Düzenli kullanım proje kalitesini artırır.
+
+*Güncelleme: DeepSeek ULTRA Enterprise Architect v4.0*
