@@ -12,7 +12,7 @@ permissions:
 jobs:
   ultra_architect:
     runs-on: ubuntu-latest
-    if: github.actor != 'github-actions[bot]'
+    if: github.actor != 'github-actions[bot]' && (github.event_name == 'issues' || github.event_name == 'issue_comment')
     steps:
       - name: Ultra Güvenli Depo Checkout
         uses: actions/checkout@v4
