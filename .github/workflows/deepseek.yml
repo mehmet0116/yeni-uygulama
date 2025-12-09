@@ -200,7 +200,21 @@ Print only file/silme bloklarını üret, sohbet veya öneri eklenemez.
               }
               
               // Kritik dosyaları koruma
-              const protectedFiles = ['.gitignore', 'README.md', '.github/workflows/deepseek.yml'];
+              const protectedFiles = [
+                '.gitignore', 
+                'README.md', 
+                '.github/workflows/deepseek.yml',
+                'package.json',
+                'package-lock.json',
+                'yarn.lock',
+                'requirements.txt',
+                'Gemfile',
+                'Gemfile.lock',
+                'go.mod',
+                'go.sum',
+                'Cargo.toml',
+                'Cargo.lock'
+              ];
               if (protectedFiles.includes(fname)) {
                 delFail.push({fname, err: 'Korumalı dosya'});
                 resultLog += `\n🛡️ \`${fname}\` - Korumalı dosya`;
@@ -249,7 +263,10 @@ Print only file/silme bloklarını üret, sohbet veya öneri eklenemez.
             if (filesDone.length === 0 && delDone.length === 0) {
               resultLog += `\n---\n### ℹ️ Bilgi\n`;
               resultLog += `AI yanıtında dosya/silme bloğu tespit edilmedi.\n\n`;
-              resultLog += `<details><summary>AI Yanıtını Görüntüle</summary>\n\n\`\`\`\n${aiReply.substring(0, 2000)}${aiReply.length > 2000 ? '\n...(kısaltıldı)' : ''}\n\`\`\`\n</details>`;
+              // Güvenlik: AI yanıtını sınırlı ve sanitize edilmiş şekilde göster
+              const maxPreviewLength = 500;
+              const sanitizedReply = aiReply.substring(0, maxPreviewLength).replace(/[<>]/g, '');
+              resultLog += `<details><summary>AI Yanıt Önizlemesi (ilk ${maxPreviewLength} karakter)</summary>\n\n\`\`\`\n${sanitizedReply}${aiReply.length > maxPreviewLength ? '\n...(kısaltıldı)' : ''}\n\`\`\`\n</details>`;
             }
             
             resultLog += `\n\n---\n*🤖 DeepSeek ULTRA Enterprise Architect v2.0 | Powered by AI*`;
