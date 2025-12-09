@@ -25,18 +25,16 @@ jobs:
           script: |
             /**
              * ╔═══════════════════════════════════════════════════════════════╗
-             * ║       ULTRA ENTERPRISE ARCHITECT BOT v2.1 (DÜZELTİLMİŞ)       ║
+             * ║       ULTRA ENTERPRISE ARCHITECT BOT v2.2 (YAML DÜZELTİLMİŞ)  ║
              * ║       Powered by DeepSeek AI                                  ║
              * ╚═══════════════════════════════════════════════════════════════╝
              * 
-             * Düzeltmeler:
-             * ✓ API URL'sindeki fazladan boşluklar kaldırıldı
-             * ✓ Daha sağlam hata yönetimi eklendi
-             * ✓ API endpoint'i doğrulandı
-             * ✓ Yanıt işleme mekanizması iyileştirildi
+             * DÜZELTMELER:
+             * ✓ YAML uyumlu çok satırlı script formatı
+             * ✓ Doğru girinti ve escape karakterleri
+             * ✓ API URL'si ve hata yönetimi iyileştirildi
              */
 
-            //---------- Sistemi Koruyan Sabitler ve Kontroller ----------
             console.log("🚀 [Ultra Bot] İşlem başlatılıyor...");
             console.log(`📍 [Ultra Bot] Event: ${context.eventName}`);
             
@@ -53,7 +51,6 @@ jobs:
             
             console.log(`✅ [Ultra Bot] Validasyonlar başarılı. Mesaj uzunluğu: ${userMessage.length} karakter`);
 
-            //---------- Endüstri Lideri Prompt (Hiçbir Açık Yok) ----------
             const systemPrompt = `
 Sen 1 numaralı global yazılım (ULTRA ENTERPRISE) mimarısın.
 Her geliştirme sorumluluğun; kod, mimari, güvenlik, sürdürülebilirlik, ölçeklenebilirlik, ultra temizlik ve %100 işlevdir.
@@ -88,9 +85,7 @@ print("App started (Başladı)")
 Print only file/silme bloklarını üret, sohbet veya öneri eklenemez.
             `.trim();
 
-            //---------- DeepSeek ile Ultra Güvenli İletişim ----------
             console.log("🟢 [Ultra Bot] DeepSeek API çağrısı başlatılıyor...");
-            // DÜZELTME: URL'deki fazladan boşluklar kaldırıldı
             const apiUrl = "https://api.deepseek.com/v1/chat/completions";
             console.log(`🌐 [Ultra Bot] Endpoint: ${apiUrl}`);
             
@@ -132,7 +127,6 @@ Print only file/silme bloklarını üret, sohbet veya öneri eklenemez.
               console.log(`📝 [Ultra Bot] AI yanıt boyutu: ${aiReply.length} karakter`);
               console.log(`🤖 [Ultra Bot] AI yanıtı: ${aiReply.substring(0, 200)}...`);
 
-              //---------- Dosya BLOKLARI: Ekle/Güncelle/Logla ----------
               console.log("📁 [Ultra Bot] Dosya bloklarını işlemeye başlıyor...");
               const fileRE = /---FILENAME:\s*(.*?)---\n([\s\S]*?)---END_OF_FILE---/g;
               let match, filesDone=[], filesProblems=[];
@@ -148,7 +142,6 @@ Print only file/silme bloklarını üret, sohbet veya öneri eklenemez.
                 
                 console.log(`📝 [Ultra Bot] İşleniyor: ${fname} (${fcont.length} bytes)`);
                 
-                // Basit güvenlik kontrolü
                 if (!fname || fname.includes('..') || fname.startsWith('/')) {
                   filesProblems.push({fname, err: 'Geçersiz dosya adı'});
                   resultLog += `\n❌ \`${fname}\` - Geçersiz dosya adı`;
@@ -156,15 +149,13 @@ Print only file/silme bloklarını üret, sohbet veya öneri eklenemez.
                 }
                 
                 let sha = undefined;
-                // SHA bul (varsa)
                 try {
-                  const { data: existing } = await github.rest.repos.getContent({
+                  const {  existing } = await github.rest.repos.getContent({
                     owner: context.repo.owner, repo: context.repo.repo, path: fname
                   });
                   sha = existing.sha;
                 } catch(_) {/* dosya yoksa */}
                 
-                // Kayıt/Güncelle
                 try {
                   await github.rest.repos.createOrUpdateFileContents({
                     owner: context.repo.owner, repo: context.repo.repo, path: fname,
@@ -182,7 +173,6 @@ Print only file/silme bloklarını üret, sohbet veya öneri eklenemez.
               }
               console.log(`📁 [Ultra Bot] Dosya işleme tamamlandı: ${filesDone.length} başarılı`);
 
-              //---------- SILME BLOKLARI: Ultra Detaylı ----------
               console.log("🗑️ [Ultra Bot] Silme bloklarını işlemeye başlıyor...");
               const delRE = /---DELETE:\s*(.*?)---\s*---END_DELETE---/g;
               let delDone=[], delFail=[];
@@ -195,14 +185,12 @@ Print only file/silme bloklarını üret, sohbet veya öneri eklenemez.
                 
                 console.log(`🗑️ [Ultra Bot] Siliniyor: ${fname}`);
                 
-                // Güvenlik kontrolü
                 if (!fname || fname.includes('..') || fname.startsWith('/')) {
                   delFail.push({fname, err: 'Geçersiz dosya adı'});
                   resultLog += `\n⚠️ \`${fname}\` - Geçersiz dosya adı`;
                   continue;
                 }
                 
-                // Kritik dosyaları koruma
                 const protectedFiles = [
                   '.gitignore', 
                   'README.md', 
@@ -226,7 +214,7 @@ Print only file/silme bloklarını üret, sohbet veya öneri eklenemez.
                 }
                 
                 try {
-                  const { data: existing } = await github.rest.repos.getContent({
+                  const {  existing } = await github.rest.repos.getContent({
                     owner: context.repo.owner, repo: context.repo.repo, path: fname
                   });
                   await github.rest.repos.deleteFile({
@@ -245,7 +233,6 @@ Print only file/silme bloklarını üret, sohbet veya öneri eklenemez.
               }
               console.log(`🗑️ [Ultra Bot] Silme tamamlandı: ${delDone.length} başarılı`);
 
-              //---------- Nihai KURUMSAL RAPOR ve Log Sonlandırma ----------
               const totalOps = filesDone.length + delDone.length;
               const totalErrors = filesProblems.length + delFail.length;
               
@@ -266,13 +253,12 @@ Print only file/silme bloklarını üret, sohbet veya öneri eklenemez.
               if (!fileBlockFound && !deleteBlockFound) {
                 resultLog += `\n---\n### ℹ️ Bilgi\n`;
                 resultLog += `AI yanıtında dosya/silme bloğu tespit edilmedi.\n\n`;
-                // Güvenlik: AI yanıtını sınırlı ve sanitize edilmiş şekilde göster
                 const maxPreviewLength = 500;
                 const sanitizedReply = aiReply.substring(0, maxPreviewLength).replace(/[<>]/g, '');
                 resultLog += `<details><summary>AI Yanıt Önizlemesi (ilk ${maxPreviewLength} karakter)</summary>\n\n\`\`\`\n${sanitizedReply}${aiReply.length > maxPreviewLength ? '\n...(kısaltıldı)' : ''}\n\`\`\`\n</details>`;
               }
               
-              resultLog += `\n\n---\n*🤖 DeepSeek ULTRA Enterprise Architect v2.1 | Fixed URL Issue*`;
+              resultLog += `\n\n---\n*🤖 DeepSeek ULTRA Enterprise Architect v2.2 | YAML Uyumlu*`;
               
               console.log(`📤 [Ultra Bot] Rapor gönderiliyor...`);
               await github.rest.issues.createComment({
@@ -281,7 +267,6 @@ Print only file/silme bloklarını üret, sohbet veya öneri eklenemez.
                 body: resultLog
               });
 
-              //---------- Ultra Professional: Nihai Not ----------
               console.log(`\n${'='.repeat(50)}`);
               console.log(`🎉 [ULTRA BOT] İşlem Tamamlandı!`);
               console.log(`📊 Toplam: ${totalOps} başarılı, ${totalErrors} hatalı`);
@@ -292,7 +277,6 @@ Print only file/silme bloklarını üret, sohbet veya öneri eklenemez.
               console.error(`💥 [Ultra Bot] Beklenmeyen Hata: ${error.message}`);
               console.error(error.stack);
               
-              // Hata raporu oluştur
               const errorLog = `### ❌ Kritik Hata Raporu\n\n`;
               errorLog += `**Tarih:** ${new Date().toISOString()}\n`;
               errorLog += `**Hata:** ${error.message}\n`;
@@ -301,7 +285,7 @@ Print only file/silme bloklarını üret, sohbet veya öneri eklenemez.
               errorLog += `- DEEPSEEK_API_KEY secret'ının doğru olduğundan emin olun\n`;
               errorLog += `- API limitlerini kontrol edin\n`;
               errorLog += `- İstek formatını kontrol edin\n\n`;
-              errorLog += `*🤖 DeepSeek ULTRA Enterprise Architect v2.1 | Hata Yönetimi*`;
+              errorLog += `*🤖 DeepSeek ULTRA Enterprise Architect v2.2 | Hata Yönetimi*`;
               
               await github.rest.issues.createComment({
                 owner: context.repo.owner, repo: context.repo.repo,
